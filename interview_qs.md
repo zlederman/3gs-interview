@@ -73,7 +73,7 @@ To be completely honest, this app looks like a ton of tech debt. Having audited 
 - Database connections are passed from front end to backend
 - Using forms instead of POST requests
 
-#### 2. Not Architected or Designed, Just slapped together pieces
+#### 2. No Coherent Architecture
 - Poor file naming: e.g. all server routes are defined in score.py, main.py isn't the main file
 - Server routes aren't put into seperate folders which indicate which REST resource they are using
 - Repo isn't organized well. Very flat file heirarchy, more nesting could provide more context on what code is related.
