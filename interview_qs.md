@@ -65,7 +65,7 @@ Containerization: Docker
 To be completely honest, this app looks like a ton of tech debt. Having audited the backend the most I feel I can give you an accurate critique of why I think this should not be used.
 
 ### Backend Service
-#### 1. Does not use FastAPI properly
+#### 1. FastAPI
 - Not using native dependency injection, instead creates connections at request time
 -
 - Not using pydantic schemas which allow for rapid documentation and better IDE experience
@@ -73,7 +73,7 @@ To be completely honest, this app looks like a ton of tech debt. Having audited 
 - Database connections are passed from front end to backend
 - Using forms instead of POST requests
 
-#### 2. No Coherent Architecture
+#### 2. Architecture and Project Structure
 - Poor file naming: e.g. all server routes are defined in score.py, main.py isn't the main file
 - Server routes aren't put into seperate folders which indicate which REST resource they are using
 - Repo isn't organized well. Very flat file heirarchy, more nesting could provide more context on what code is related.
@@ -92,10 +92,8 @@ To be completely honest, this app looks like a ton of tech debt. Having audited 
 
 
 #### 4. LLMs
- *In my opinion follow the KISS (Keep it stupid simple) principle*
-
-- Langchain is techdebt, its really hard to debug, it uses overly complex call back functions, uses some bespoke pipe operator overloading which looks pretty but gets complex fast.
-- This is my first time looking at a graph RAG application and looking at the code it seems like a lot of complexity. It makes me wonder if its actually worth the effort to maintain. 
+- Langchain is tech debt. its really hard to debug and uses overly complex call back functions, uses some bespoke pipe operator overloading which looks pretty but gets complex fast.
+ 
 
 
 
