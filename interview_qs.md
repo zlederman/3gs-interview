@@ -85,6 +85,7 @@ To be completely honest, this app looks like a ton of tech debt. Having audited 
 - Using threadpooling over background tasks.
 - Environment variables can causes crashes mid execution instead of crashing on startup. See `llm.py -> get_llm()`  
 - Environment variables are overly complex and have parsing needs such as passing llm key and model id in the same env var, see `LLM_MODEL_CONFIG_openai_gpt_3.5`
+- Missing an in depth extraction diagram and documentation
 
 #### 3. Testing
 - Not using a testing framework like unittest or pytest
