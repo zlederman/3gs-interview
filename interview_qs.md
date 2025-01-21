@@ -7,9 +7,57 @@
 ### Where in the repository is the NER logic? Describe it.
 NER is Named Entity Recognition which is essentially the process of extracting structured data from unstructured data sources. In this code base the NER logic is located in `backend/src/shared/schema_extraction.py`
 
-It essentially takes a chunk of input text, a prompt and asks an llm to extract structured data from the text using the prompt. There are two types of prompts but all of the callers for this function `schema_extraction_from_text` enforce the schema. 
+It essentially takes a chunk of input text, a prompt and asks an llm to extract structured data from the text using the prompt. There are two types of prompts but all of the callers for this function `schema_extraction_from_text` enforce the schema.
 
 The operation utilizes a langchain structured output module, and a pydantic model called Schema which represents the target Graph structure. Once its run on the input text it outputs the matching json model
+
+After reviewing the code I also found another probable area where there may be NER functionality.
+```
+async def get_graph_document_list(
+    llm, combined_chunk_document_list, allowedNodes, allowedRelationship
+):
+    futures = []
+    graph_document_list = []
+    if "diffbot_api_key" in dir(llm):
+        llm_transformer = llm
+    else:
+        if "get_name" in dir(llm) and llm.get_name() != "ChatOenAI" or llm.get_name() != "ChatVertexAI" or llm.get_name() != "AzureChatOpenAI":
+            node_properties = False
+            relationship_properties = False
+        else:
+            node_properties = ["description"]
+            relationship_properties = ["description"]
+        llm_transformer = LLMGraphTransformer(
+            llm=llm,
+            node_properties=node_properties,
+            relationship_properties=relationship_properties,
+            allowed_nodes=allowedNodes,
+            allowed_relationships=allowedRelationship,
+            ignore_tool_usage=True,
+        )
+    
+    if isinstance(llm,DiffbotGraphTransformer):
+        graph_document_list = llm_transformer.convert_to_graph_documents(combined_chunk_document_list)
+    else:
+        graph_document_list = await llm_transformer.aconvert_to_graph_documents(combined_chunk_document_list)
+    return graph_document_list
+```
+This function here utilizies Diffbot and LLMGraphTransformer which takes pieces of text and converts them to graph nodes. It utilizes a list of allowed nodes and allowed relationships to extract entities from a piece of text.
+
+this is the prompt that underlies the extraction functionality:
+```
+    "You are a top-tier algorithm designed for extracting information in "
+    "structured formats to build a knowledge graph. Your task is to identify "
+    "the entities and relations requested with the user prompt from a given "
+    "text. You must generate the output in a JSON format containing a list "
+    'with JSON objects. Each object should have the keys: "head", '
+    '"head_type", "relation", "tail", and "tail_type". The "head" '
+    "key must contain the text of the extracted entity with one of the types "
+    "from the provided list in the user prompt.",
+    f'The "head_type" key must contain the type of the extracted head entity,'
+    f"which must be one of the types from {node_labels_str}."
+```
+
 
 ### Can you write a function to evaluate named entities against entities in Wikidata?
 

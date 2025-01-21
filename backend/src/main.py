@@ -1,4 +1,5 @@
 from langchain_neo4j import Neo4jGraph
+from src.wikidata import populate_from_wikidata
 from src.shared.constants import (BUCKET_UPLOAD, PROJECT_ID, QUERY_TO_GET_CHUNKS, 
                                   QUERY_TO_DELETE_EXISTING_ENTITIES, 
                                   QUERY_TO_GET_LAST_PROCESSED_CHUNK_POSITION,
@@ -466,13 +467,17 @@ async def processing_chunks(chunkId_chunkDoc_list,graph,uri, userName, password,
   logging.info("Get graph document list from models")
   
   start_entity_extraction = time.time()
-  graph_documents =  await get_graph_from_llm(model, chunkId_chunkDoc_list, allowedNodes, allowedRelationship)
+  graph_documents: List[GraphDocument] =  await get_graph_from_llm(model, chunkId_chunkDoc_list, allowedNodes, allowedRelationship)
+  logging.info(graph_documents[0])
   end_entity_extraction = time.time()
   elapsed_entity_extraction = end_entity_extraction - start_entity_extraction
   logging.info(f'Time taken to extract enitities from LLM Graph Builder: {elapsed_entity_extraction:.2f} seconds')
+  ## functionality to check if extracted entities are in wikidata
+  graph_documents: List[GraphDocument] = await populate_from_wikidata(graph_documents)
+  ##
   latency_processing_chunk["entity_extraction"] = f'{elapsed_entity_extraction:.2f}'
   cleaned_graph_documents = handle_backticks_nodes_relationship_id_type(graph_documents)
-  
+
   start_save_graphDocuments = time.time()
   save_graphDocuments_in_neo4j(graph, cleaned_graph_documents)
   end_save_graphDocuments = time.time()
