@@ -116,13 +116,13 @@ docs = doc_retriever.invoke({"messages": messages},{"callbacks":[handler]})
 ```
 ## 3. What does the application use for the frontend?  
 
-Language: Typescript
-UI Framework: React
-CSS Framework: Tailwind
-Packaging and Deploys: Vite
-Server: Nginx
-Component Library: Neo4j-NDL 
-Containerization: Docker
+- Language: Typescript
+- UI Framework: React
+- CSS Framework: Tailwind
+- Packaging and Deploys: Vite
+- Server: Nginx
+- Component Library: Neo4j-NDL 
+- Containerization: Docker
 
 
 
