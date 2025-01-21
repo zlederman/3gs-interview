@@ -92,7 +92,7 @@ To be completely honest, this app looks like a ton of tech debt. Having audited 
 
 
 #### 4. LLMs
-- Langchain is tech debt. its really hard to debug and uses overly complex call back functions and uses some bespoke pipe operator overloading which looks pretty but gets complex fast.
+- I am not a fan of langchain. Its really hard to debug and uses overly complex call back functions and uses some bespoke pipe operator overloading which looks pretty but gets complex fast.
  
 
 
